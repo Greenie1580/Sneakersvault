@@ -1,0 +1,11 @@
+{
+  "name": "sneakersvault-sync",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@notionhq/client": "^2.2.15"
+  },
+  "scripts": {
+    "notion:export": "node scripts/notion-export.mjs"
+  }
+}
