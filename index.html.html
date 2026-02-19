@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KickVault — Sneaker Database</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --orange: #ff6b1a;
+    --orange-dim: rgba(255, 107, 26, 0.12);
+    --orange-glow: rgba(255, 107, 26, 0.35);
+    --text: #f0f0f0;
+    --text-dim: #888;
+    --green: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--orange);
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon { font-size: 1.6rem; }
+
+  .header-actions { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--orange); color: #fff; }
+  .btn-primary:hover { background: #ff8040; transform: translateY(-1px); box-shadow: 0 6px 20px var(--orange-glow); }
+  .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-danger:hover { background: #f87171; }
+
+  /* NAV TABS */
+  nav {
+    display: flex;
+    gap: 4px;
+    padding: 12px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .nav-tab {
+    padding: 8px 20px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    transition: all 0.2s;
+    border: none;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .nav-tab:hover { color: var(--text); background: var(--surface2); }
+  .nav-tab.active { background: var(--orange-dim); color: var(--orange); }
+  .badge {
+    background: var(--orange);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 99px;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  /* MAIN LAYOUT */
+  main { padding: 28px; max-width: 1200px; margin: 0 auto; }
+
+  .page { display: none; animation: fadeIn 0.25s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* SEARCH & FILTER BAR */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+  }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-size: 1rem;
+  }
+  input[type="text"], input[type="number"], textarea, select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--orange);
+  }
+  .search-input {
+    width: 100%;
+    padding: 11px 14px 11px 40px;
+  }
+
+  .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    padding: 7px 16px;
+    border-radius: 99px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-dim);
+    transition: all 0.2s;
+  }
+  .chip:hover { border-color: var(--orange); color: var(--orange); }
+  .chip.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+  /* SNEAKER GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+  .card:hover {
+    border-color: var(--orange);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--orange);
+  }
+
+  .card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    background: var(--surface2);
+  }
+  .card-img-placeholder {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a1a1a, #222);
+    font-size: 3.5rem;
+  }
+
+  .card-body { padding: 16px; }
+  .card-brand {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+  .card-model { font-weight: 700; font-size: 1rem; margin-bottom: 3px; line-height: 1.2; }
+  .card-colorway { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 12px; }
+
+  .card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+  .tag {
+    padding: 2px 9px;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--orange-dim);
+    color: var(--orange);
+    border: 1px solid rgba(255,107,26,0.25);
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .card-value { font-size: 1.2rem; font-weight: 700; }
+  .card-pl {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  .card-pl.positive { background: rgba(34,197,94,0.15); color: var(--green); }
+  .card-pl.negative { background: rgba(239,68,68,0.15); color: var(--red); }
+  .card-pl.neutral { background: var(--surface2); color: var(--text-dim); }
+
+  .wishlist-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 99px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    backdrop-filter: blur(6px);
+  }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+  }
+  .empty-icon { font-size: 4rem; margin-bottom: 16px; opacity: 0.4; }
+  .empty h3 { font-size: 1.3rem; color: var(--text); margin-bottom: 8px; }
+  .empty p { margin-bottom: 24px; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slideUp { from { opacity: 0; transform: scale(0.94) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 24px 0;
+  }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 1px; }
+  .modal-close {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    width: 34px;
+    height: 34px;
+    border-radius: 99px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { border-color: var(--red); color: var(--red); }
+
+  .modal-body { padding: 20px 24px 24px; }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; }
+  input[type="text"], input[type="number"] { padding: 11px 14px; width: 100%; }
+  textarea { padding: 11px 14px; width: 100%; resize: vertical; min-height: 80px; }
+
+  .photo-upload {
+    width: 100%;
+    height: 140px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    background: var(--surface2);
+  }
+  .photo-upload:hover { border-color: var(--orange); }
+  .photo-upload img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .photo-upload-text { color: var(--text-dim); font-size: 0.85rem; text-align: center; position: relative; }
+  .photo-upload-icon { font-size: 1.8rem; margin-bottom: 6px; }
+  #photoInput { display: none; }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* DETAIL MODAL */
+  .detail-hero {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    display: block;
+    border-radius: 14px 14px 0 0;
+  }
+  .detail-hero-placeholder {
+    width: 100%;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a1a1a, #252525);
+    font-size: 5rem;
+    border-radius: 14px 14px 0 0;
+  }
+  .detail-brand {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .detail-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 1px; margin-bottom: 4px; }
+  .detail-colorway { color: var(--text-dim); margin-bottom: 20px; }
+
+  .value-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .value-box {
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .value-box-label { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
+  .value-box-val { font-size: 1.3rem; font-weight: 700; }
+
+  .detail-section { margin-bottom: 16px; }
+  .detail-section h4 { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 8px; }
+  .detail-note {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .detail-barcode {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+
+  /* STATS */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 30px; }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .stat-card.orange::before { background: var(--orange); }
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.blue::before { background: var(--blue); }
+  .stat-card.purple::before { background: var(--purple); }
+  .stat-card.red::before { background: var(--red); }
+
+  .stat-icon { font-size: 1.5rem; margin-bottom: 12px; }
+  .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; letter-spacing: 1px; margin-bottom: 2px; }
+  .stat-label { font-size: 0.8rem; color: var(--text-dim); font-weight: 500; }
+
+  .chart-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .chart-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; margin-bottom: 20px; color: var(--text-dim); }
+
+  .brand-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .brand-bar-label { font-size: 0.82rem; font-weight: 600; width: 100px; flex-shrink: 0; }
+  .brand-bar-track { flex: 1; height: 10px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+  .brand-bar-fill { height: 100%; background: var(--orange); border-radius: 99px; transition: width 0.5s ease; }
+  .brand-bar-count { font-size: 0.8rem; color: var(--orange); font-weight: 700; width: 30px; text-align: right; }
+
+  /* SCANNER */
+  .scanner-area {
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  #video { width: 100%; border-radius: 8px; display: none; }
+  #scanBtn { margin-top: 10px; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #444; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    header { padding: 14px 16px; }
+    nav { padding: 10px 16px; overflow-x: auto; }
+    main { padding: 16px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .value-row { grid-template-columns: 1fr 1fr; }
+    .stat-val { font-size: 1.8rem; }
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 1px; color: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <span class="logo-icon">👟</span>
+    KickVault
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-primary" onclick="openAddModal(false)">+ Add Sneaker</button>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <button class="nav-tab active" onclick="switchTab('collection', this)">
+    👟 Collection <span class="badge" id="collectionBadge">0</span>
+  </button>
+  <button class="nav-tab" onclick="switchTab('wishlist', this)">
+    ❤️ Wishlist <span class="badge" id="wishlistBadge">0</span>
+  </button>
+  <button class="nav-tab" onclick="switchTab('stats', this)">
+    📊 Stats
+  </button>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- COLLECTION PAGE -->
+  <div id="page-collection" class="page active">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search brand, model, colorway…" oninput="renderCollection()">
+      </div>
+      <div class="filter-chips" id="filterChips"></div>
+    </div>
+    <div class="grid" id="collectionGrid"></div>
+    <div class="empty" id="collectionEmpty" style="display:none">
+      <div class="empty-icon">👟</div>
+      <h3>No Sneakers Yet</h3>
+      <p>Start building your collection.</p>
+      <button class="btn btn-primary" onclick="openAddModal(false)">+ Add Your First Pair</button>
+    </div>
+  </div>
+
+  <!-- WISHLIST PAGE -->
+  <div id="page-wishlist" class="page">
+    <div class="section-header">
+      <span class="section-title">Your Wishlist</span>
+      <button class="btn btn-primary" onclick="openAddModal(true)">+ Add to Wishlist</button>
+    </div>
+    <div class="grid" id="wishlistGrid"></div>
+    <div class="empty" id="wishlistEmpty" style="display:none">
+      <div class="empty-icon">❤️</div>
+      <h3>Wishlist is Empty</h3>
+      <p>Add sneakers you're hunting for.</p>
+      <button class="btn btn-primary" onclick="openAddModal(true)">+ Add Grail</button>
+    </div>
+  </div>
+
+  <!-- STATS PAGE -->
+  <div id="page-stats" class="page">
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="chart-section">
+      <div class="chart-title">COLLECTION BY BRAND</div>
+      <div id="brandChart"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">ADD SNEAKER</span>
+      <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <!-- Photo -->
+        <div class="form-group full">
+          <label>Photo</label>
+          <div class="photo-upload" onclick="document.getElementById('photoInput').click()" id="photoUploadArea">
+            <div class="photo-upload-text">
+              <div class="photo-upload-icon">📸</div>
+              Click to upload a photo
+            </div>
+          </div>
+          <input type="file" id="photoInput" accept="image/*" onchange="handlePhoto(event)">
+        </div>
+        <!-- Fields -->
+        <div class="form-group">
+          <label>Brand *</label>
+          <input type="text" id="fBrand" placeholder="Nike, Jordan, Adidas…">
+        </div>
+        <div class="form-group">
+          <label>Model *</label>
+          <input type="text" id="fModel" placeholder="Air Force 1, Yeezy…">
+        </div>
+        <div class="form-group full">
+          <label>Colorway</label>
+          <input type="text" id="fColorway" placeholder="White/Black, Bred…">
+        </div>
+        <div class="form-group">
+          <label>Purchase Price ($)</label>
+          <input type="number" id="fPurchasePrice" placeholder="0" min="0">
+        </div>
+        <div class="form-group">
+          <label>Current/Resale Value ($)</label>
+          <input type="number" id="fCurrentValue" placeholder="0" min="0">
+        </div>
+        <div class="form-group full">
+          <label>Tags (comma separated)</label>
+          <input type="text" id="fTags" placeholder="DS, Worn, Grail, Summer…">
+        </div>
+        <div class="form-group full">
+          <label>Barcode / SKU</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="fBarcode" placeholder="Enter or scan barcode" style="flex:1">
+            <button class="btn btn-ghost" onclick="openScanner()" title="Scan barcode">📷</button>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>Notes</label>
+          <textarea id="fNotes" placeholder="Story behind the pair, condition details…"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="closeModal('addModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveSneaker()">Save Sneaker</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" style="max-width:580px;">
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<!-- SCANNER MODAL -->
+<div class="modal-overlay" id="scannerModal">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <span class="modal-title">SCAN BARCODE</span>
+      <button class="modal-close" onclick="stopScanner()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="scanner-area">
+        <video id="video" autoplay playsinline></video>
+        <div id="scanPlaceholder">
+          <div style="font-size:2.5rem;margin-bottom:10px;">📷</div>
+          <p style="color:var(--text-dim);font-size:0.9rem;">Camera will activate below</p>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="scanBtn" onclick="startCamera()" style="width:100%">Start Camera</button>
+      <p style="color:var(--text-dim);font-size:0.8rem;text-align:center;margin-top:12px;">Point at a barcode or QR code. You can also type the barcode manually in the form.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.6/JsBarcode.all.min.js"></script>
+<script>
+// ─── DATA LAYER ───────────────────────────────────────────────
+const STORAGE_KEY = 'kickvault_sneakers';
+
+function loadSneakers() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveSneakers(arr) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+
+let sneakers = loadSneakers();
+let editingId = null;
+let addingWishlist = false;
+let currentPhoto = null;
+let stream = null;
+
+const BRANDS = ['All', 'Nike', 'Jordan', 'Adidas', 'New Balance', 'Puma', 'Reebok', 'Converse', 'Vans', 'Other'];
+let activeFilter = 'All';
+
+// ─── TAB NAVIGATION ──────────────────────────────────────────
+function switchTab(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  btn.classList.add('active');
+  if (page === 'stats') renderStats();
+  if (page === 'wishlist') renderWishlist();
+}
+
+// ─── FILTER CHIPS ─────────────────────────────────────────────
+function renderFilterChips() {
+  const wrap = document.getElementById('filterChips');
+  wrap.innerHTML = BRANDS.map(b => `
+    <div class="chip ${activeFilter === b ? 'active' : ''}" onclick="setFilter('${b}')">${b}</div>
+  `).join('');
+}
+
+function setFilter(brand) {
+  activeFilter = brand;
+  renderFilterChips();
+  renderCollection();
+}
+
+// ─── COLLECTION ───────────────────────────────────────────────
+function renderCollection() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const collection = sneakers.filter(s => !s.wishlist);
+  const filtered = collection.filter(s => {
+    const matchSearch = !q || [s.brand, s.model, s.colorway, s.tags].join(' ').toLowerCase().includes(q);
+    const matchFilter = activeFilter === 'All' || s.brand === activeFilter ||
+      (activeFilter === 'Other' && !BRANDS.slice(1,-1).includes(s.brand));
+    return matchSearch && matchFilter;
+  });
+
+  const grid = document.getElementById('collectionGrid');
+  const empty = document.getElementById('collectionEmpty');
+
+  document.getElementById('collectionBadge').textContent = collection.length;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    grid.innerHTML = filtered.map(s => sneakerCard(s)).join('');
+  }
+}
+
+function renderWishlist() {
+  const wish = sneakers.filter(s => s.wishlist);
+  const grid = document.getElementById('wishlistGrid');
+  const empty = document.getElementById('wishlistEmpty');
+  document.getElementById('wishlistBadge').textContent = wish.length;
+
+  if (wish.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    grid.innerHTML = wish.map(s => sneakerCard(s)).join('');
+  }
+}
+
+function sneakerCard(s) {
+  const pl = (s.currentValue || 0) - (s.purchasePrice || 0);
+  const plClass = pl > 0 ? 'positive' : pl < 0 ? 'negative' : 'neutral';
+  const plText = pl > 0 ? `+$${pl.toLocaleString()}` : pl < 0 ? `-$${Math.abs(pl).toLocaleString()}` : 'Even';
+  const tags = (s.tags || '').split(',').map(t=>t.trim()).filter(Boolean);
+
+  return `
+    <div class="card" onclick="openDetail('${s.id}')">
+      ${s.wishlist ? '<div class="wishlist-badge">❤️</div>' : ''}
+      ${s.photo
+        ? `<img class="card-img" src="${s.photo}" alt="${s.model}">`
+        : `<div class="card-img-placeholder">👟</div>`}
+      <div class="card-body">
+        <div class="card-brand">${s.brand || '—'}</div>
+        <div class="card-model">${s.model || 'Unknown Model'}</div>
+        <div class="card-colorway">${s.colorway || ''}</div>
+        ${tags.length ? `<div class="card-tags">${tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>` : ''}
+        <div class="card-footer">
+          <div class="card-value">$${(s.currentValue || 0).toLocaleString()}</div>
+          ${!s.wishlist ? `<div class="card-pl ${plClass}">${plText}</div>` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── DETAIL VIEW ─────────────────────────────────────────────
+function openDetail(id) {
+  const s = sneakers.find(x => x.id === id);
+  if (!s) return;
+  const pl = (s.currentValue || 0) - (s.purchasePrice || 0);
+  const plColor = pl >= 0 ? 'var(--green)' : 'var(--red)';
+  const tags = (s.tags || '').split(',').map(t=>t.trim()).filter(Boolean);
+
+  document.getElementById('detailContent').innerHTML = `
+    ${s.photo
+      ? `<img class="detail-hero" src="${s.photo}" alt="${s.model}">`
+      : `<div class="detail-hero-placeholder">👟</div>`}
+    <div class="modal-header" style="padding-top:20px;">
+      <span></span>
+      <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    </div>
+    <div class="modal-body" style="padding-top:8px;">
+      <div class="detail-brand">${s.brand || ''}</div>
+      <div class="detail-name">${s.model || 'Unknown Model'}</div>
+      <div class="detail-colorway">${s.colorway || ''}</div>
+
+      <div class="value-row">
+        <div class="value-box">
+          <div class="value-box-label">Paid</div>
+          <div class="value-box-val" style="color:var(--blue)">$${(s.purchasePrice||0).toLocaleString()}</div>
+        </div>
+        <div class="value-box">
+          <div class="value-box-label">Value</div>
+          <div class="value-box-val" style="color:var(--purple)">$${(s.currentValue||0).toLocaleString()}</div>
+        </div>
+        <div class="value-box">
+          <div class="value-box-label">P&L</div>
+          <div class="value-box-val" style="color:${plColor}">${pl>=0?'+':''}\$${pl.toLocaleString()}</div>
+        </div>
+      </div>
+
+      ${tags.length ? `
+      <div class="detail-section">
+        <h4>Tags</h4>
+        <div class="card-tags">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      </div>` : ''}
+
+      ${s.notes ? `
+      <div class="detail-section">
+        <h4>Notes</h4>
+        <div class="detail-note">${s.notes}</div>
+      </div>` : ''}
+
+      ${s.barcode ? `
+      <div class="detail-section">
+        <h4>Barcode / SKU</h4>
+        <div class="detail-barcode">${s.barcode}</div>
+      </div>` : ''}
+
+      <div style="display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+        <button class="btn btn-ghost" style="flex:1" onclick="editSneaker('${s.id}')">✏️ Edit</button>
+        <button class="btn btn-danger" onclick="deleteSneaker('${s.id}')">🗑 Delete</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('detailModal').classList.add('open');
+}
+
+// ─── ADD / EDIT MODAL ────────────────────────────────────────
+function openAddModal(isWishlist) {
+  editingId = null;
+  addingWishlist = isWishlist;
+  currentPhoto = null;
+  clearForm();
+  document.getElementById('modalTitle').textContent = isWishlist ? 'ADD TO WISHLIST' : 'ADD SNEAKER';
+  document.getElementById('addModal').classList.add('open');
+}
+
+function editSneaker(id) {
+  closeModal('detailModal');
+  const s = sneakers.find(x => x.id === id);
+  if (!s) return;
+  editingId = id;
+  addingWishlist = s.wishlist;
+  currentPhoto = s.photo || null;
+
+  document.getElementById('fBrand').value = s.brand || '';
+  document.getElementById('fModel').value = s.model || '';
+  document.getElementById('fColorway').value = s.colorway || '';
+  document.getElementById('fPurchasePrice').value = s.purchasePrice || '';
+  document.getElementById('fCurrentValue').value = s.currentValue || '';
+  document.getElementById('fTags').value = s.tags || '';
+  document.getElementById('fBarcode').value = s.barcode || '';
+  document.getElementById('fNotes').value = s.notes || '';
+
+  const area = document.getElementById('photoUploadArea');
+  area.innerHTML = currentPhoto
+    ? `<img src="${currentPhoto}"><div class="photo-upload-text" style="position:relative;background:rgba(0,0,0,0.5);padding:6px 12px;border-radius:6px;">Change Photo</div>`
+    : `<div class="photo-upload-text"><div class="photo-upload-icon">📸</div>Click to upload a photo</div>`;
+
+  document.getElementById('modalTitle').textContent = 'EDIT SNEAKER';
+  document.getElementById('addModal').classList.add('open');
+}
+
+function clearForm() {
+  ['fBrand','fModel','fColorway','fTags','fBarcode','fNotes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fPurchasePrice').value = '';
+  document.getElementById('fCurrentValue').value = '';
+  document.getElementById('photoUploadArea').innerHTML = `<div class="photo-upload-text"><div class="photo-upload-icon">📸</div>Click to upload a photo</div>`;
+}
+
+function saveSneaker() {
+  const brand = document.getElementById('fBrand').value.trim();
+  const model = document.getElementById('fModel').value.trim();
+  if (!brand || !model) {
+    alert('Brand and Model are required.');
+    return;
+  }
+
+  const data = {
+    id: editingId || Date.now().toString(),
+    brand,
+    model,
+    colorway: document.getElementById('fColorway').value.trim(),
+    purchasePrice: parseFloat(document.getElementById('fPurchasePrice').value) || 0,
+    currentValue: parseFloat(document.getElementById('fCurrentValue').value) || 0,
+    tags: document.getElementById('fTags').value.trim(),
+    barcode: document.getElementById('fBarcode').value.trim(),
+    notes: document.getElementById('fNotes').value.trim(),
+    photo: currentPhoto,
+    wishlist: addingWishlist,
+    dateAdded: editingId ? sneakers.find(s=>s.id===editingId)?.dateAdded : Date.now()
+  };
+
+  if (editingId) {
+    sneakers = sneakers.map(s => s.id === editingId ? data : s);
+  } else {
+    sneakers.unshift(data);
+  }
+
+  saveSneakers(sneakers);
+  closeModal('addModal');
+  renderCollection();
+  renderWishlist();
+}
+
+function deleteSneaker(id) {
+  if (!confirm('Delete this sneaker?')) return;
+  sneakers = sneakers.filter(s => s.id !== id);
+  saveSneakers(sneakers);
+  closeModal('detailModal');
+  renderCollection();
+  renderWishlist();
+}
+
+// ─── PHOTO UPLOAD ────────────────────────────────────────────
+function handlePhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    currentPhoto = e.target.result;
+    const area = document.getElementById('photoUploadArea');
+    area.innerHTML = `<img src="${currentPhoto}"><div class="photo-upload-text" style="position:relative;background:rgba(0,0,0,0.5);padding:6px 12px;border-radius:6px;">Change Photo</div>`;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ─── BARCODE SCANNER ─────────────────────────────────────────
+function openScanner() {
+  document.getElementById('scannerModal').classList.add('open');
+}
+
+async function startCamera() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    const video = document.getElementById('video');
+    video.srcObject = stream;
+    video.style.display = 'block';
+    document.getElementById('scanPlaceholder').style.display = 'none';
+    document.getElementById('scanBtn').textContent = '📷 Scanning…';
+    document.getElementById('scanBtn').disabled = true;
+
+    // Use BarcodeDetector if available (Chrome/Edge)
+    if ('BarcodeDetector' in window) {
+      const detector = new BarcodeDetector();
+      const interval = setInterval(async () => {
+        try {
+          const barcodes = await detector.detect(video);
+          if (barcodes.length > 0) {
+            clearInterval(interval);
+            document.getElementById('fBarcode').value = barcodes[0].rawValue;
+            stopScanner();
+          }
+        } catch {}
+      }, 300);
+    } else {
+      // Fallback: prompt manual entry
+      setTimeout(() => {
+        const code = prompt('Barcode detection not available in this browser.\nEnter barcode manually:');
+        if (code) document.getElementById('fBarcode').value = code;
+        stopScanner();
+      }, 500);
+    }
+  } catch {
+    alert('Camera access denied. Enter the barcode manually in the form.');
+    stopScanner();
+  }
+}
+
+function stopScanner() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  const video = document.getElementById('video');
+  video.style.display = 'none';
+  document.getElementById('scanPlaceholder').style.display = 'block';
+  document.getElementById('scanBtn').textContent = 'Start Camera';
+  document.getElementById('scanBtn').disabled = false;
+  closeModal('scannerModal');
+}
+
+// ─── STATS ───────────────────────────────────────────────────
+function renderStats() {
+  const collection = sneakers.filter(s => !s.wishlist);
+  const totalSpent = collection.reduce((a, s) => a + (s.purchasePrice || 0), 0);
+  const totalValue = collection.reduce((a, s) => a + (s.currentValue || 0), 0);
+  const totalPL = totalValue - totalSpent;
+  const wishCount = sneakers.filter(s => s.wishlist).length;
+
+  const plColor = totalPL >= 0 ? 'green' : 'red';
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card orange">
+      <div class="stat-icon">👟</div>
+      <div class="stat-val">${collection.length}</div>
+      <div class="stat-label">Total Pairs</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-icon">💸</div>
+      <div class="stat-val">$${totalSpent.toLocaleString()}</div>
+      <div class="stat-label">Total Spent</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-icon">📈</div>
+      <div class="stat-val">$${totalValue.toLocaleString()}</div>
+      <div class="stat-label">Total Value</div>
+    </div>
+    <div class="stat-card ${plColor}">
+      <div class="stat-icon">${totalPL >= 0 ? '🚀' : '📉'}</div>
+      <div class="stat-val">${totalPL >= 0 ? '+' : ''}$${totalPL.toLocaleString()}</div>
+      <div class="stat-label">Total P&L</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-icon">❤️</div>
+      <div class="stat-val">${wishCount}</div>
+      <div class="stat-label">On Wishlist</div>
+    </div>
+  `;
+
+  // Brand chart
+  const brandMap = {};
+  collection.forEach(s => {
+    const b = s.brand || 'Unknown';
+    brandMap[b] = (brandMap[b] || 0) + 1;
+  });
+  const sorted = Object.entries(brandMap).sort((a,b) => b[1]-a[1]).slice(0, 7);
+  const max = sorted[0]?.[1] || 1;
+
+  document.getElementById('brandChart').innerHTML = sorted.length ? sorted.map(([brand, count]) => `
+    <div class="brand-bar-row">
+      <div class="brand-bar-label">${brand}</div>
+      <div class="brand-bar-track">
+        <div class="brand-bar-fill" style="width:${(count/max*100).toFixed(1)}%"></div>
+      </div>
+      <div class="brand-bar-count">${count}</div>
+    </div>
+  `).join('') : '<p style="color:var(--text-dim);font-size:0.9rem;">Add sneakers to see brand breakdown.</p>';
+}
+
+// ─── MODAL HELPERS ───────────────────────────────────────────
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'scannerModal') stopScanner();
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal(overlay.id);
+  });
+});
+
+// ─── INIT ────────────────────────────────────────────────────
+renderFilterChips();
+renderCollection();
+renderWishlist();
+</script>
+</body>
+</html>
