@@ -686,18 +686,50 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.6/JsBarcode.all.min.js"></script>
 <script>
 // ─── DATA LAYER ───────────────────────────────────────────────
-const STORAGE_KEY = 'kickvault_sneakers';
+const STORAGE_KEY_LOCAL = 'kickvault_local_sneakers'; // only your local adds/edits
+const NOTION_JSON_URL = './data/sneakers.json';
 
-function loadSneakers() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+function loadLocalSneakers() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY_LOCAL)) || []; }
   catch { return []; }
 }
 
-function saveSneakers(arr) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+function saveLocalSneakers(arr) {
+  localStorage.setItem(STORAGE_KEY_LOCAL, JSON.stringify(arr));
 }
 
-let sneakers = loadSneakers();
+function normalizeNotionRow(r) {
+  return {
+    id: `notion_${r.id}`,
+    brand: r.brand || '',
+    model: r.model || '',
+    colorway: r.colorway || '',
+    tags: '',
+    notes: '',
+    photo: r.photos?.[0]?.url || null,
+    wishlist: false,
+    barcode: '',
+    dateAdded: r.releaseDate ? Date.parse(r.releaseDate) : Date.now(),
+    notionUrl: r.notionUrl || null,
+    isNotion: true
+  };
+}
+
+async function loadNotionSneakers() {
+  try {
+    const res = await fetch(NOTION_JSON_URL, { cache: 'no-store' });
+    if (!res.ok) return [];
+    const json = await res.json();
+    const rows = Array.isArray(json.sneakers) ? json.sneakers : [];
+    return rows.map(normalizeNotionRow);
+  } catch {
+    return [];
+  }
+}
+
+// This is the master array your UI uses:
+let sneakers = [];
+
 let editingId = null;
 let addingWishlist = false;
 let currentPhoto = null;
@@ -834,11 +866,18 @@ function openDetail(id) {
       </div>` : ''}
 
       <div style="display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
-        <button class="btn btn-ghost" style="flex:1" onclick="editSneaker('${s.id}')">✏️ Edit</button>
-        <button class="btn btn-danger" onclick="deleteSneaker('${s.id}')">🗑 Delete</button>
+        ${s.isNotion ? `
+          <a class="btn btn-ghost" style="flex:1;text-decoration:none;justify-content:center;"
+             href="${s.notionUrl || '#'}" target="_blank" rel="noopener">📝 Open in Notion</a>
+          <button class="btn btn-danger" style="opacity:0.5;cursor:not-allowed;" disabled title="Edit in Notion (sync is read-only)">🗑 Delete</button>
+        ` : `
+          <button class="btn btn-ghost" style="flex:1" onclick="editSneaker('${s.id}')">✏️ Edit</button>
+          <button class="btn btn-danger" onclick="deleteSneaker('${s.id}')">🗑 Delete</button>
+        `}
       </div>
     </div>
   `;
+
   document.getElementById('detailModal').classList.add('open');
 }
 
@@ -906,7 +945,7 @@ function saveSneaker() {
     sneakers.unshift(data);
   }
 
-  saveSneakers(sneakers);
+  saveLocalSneakers(sneakers.filter(s => !s.isNotion));
   closeModal('addModal');
   renderFilterChips();
   renderCollection();
@@ -916,7 +955,7 @@ function saveSneaker() {
 function deleteSneaker(id) {
   if (!confirm('Delete this sneaker?')) return;
   sneakers = sneakers.filter(s => s.id !== id);
-  saveSneakers(sneakers);
+  saveLocalSneakers(sneakers.filter(s => !s.isNotion));
   closeModal('detailModal');
   renderFilterChips();
   renderCollection();
@@ -1082,7 +1121,7 @@ function renderStats() {
 // ─── MODAL HELPERS ───────────────────────────────────────────
 function closeModal(id) {
   document.getElementById(id).classList.remove('open');
-  
+
 }
 
 // Close modals on overlay click
@@ -1093,9 +1132,21 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 
 // ─── INIT ────────────────────────────────────────────────────
-renderFilterChips();
-renderCollection();
-renderWishlist();
+async function init() {
+  const [notionSneakers, localSneakers] = await Promise.all([
+    loadNotionSneakers(),
+    Promise.resolve(loadLocalSneakers())
+  ]);
+
+  // Merge: Notion first, then local
+  sneakers = [...notionSneakers, ...localSneakers];
+
+  renderFilterChips();
+  renderCollection();
+  renderWishlist();
+}
+
+init();
 </script>
 </body>
 </html>
