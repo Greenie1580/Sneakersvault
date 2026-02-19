@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KickVault — Sneaker Database</title>
+<title>Dan's Sneaker Collection</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0d0d;
-    --surface: #161616;
-    --surface2: #1e1e1e;
-    --border: #2a2a2a;
-    --orange: #ff6b1a;
-    --orange-dim: rgba(255, 107, 26, 0.12);
-    --orange-glow: rgba(255, 107, 26, 0.35);
-    --text: #f0f0f0;
-    --text-dim: #888;
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: #2d2d2d;
+    --orange: #CE1141;
+    --orange-dim: rgba(206, 17, 65, 0.12);
+    --orange-glow: rgba(206, 17, 65, 0.4);
+    --text: #ffffff;
+    --text-dim: #999;
     --green: #22c55e;
-    --red: #ef4444;
-    --blue: #3b82f6;
-    --purple: #a855f7;
+    --red: #CE1141;
+    --blue: #ffffff;
+    --purple: #CE1141;
     --radius: 14px;
     --radius-sm: 8px;
   }
@@ -41,22 +41,24 @@
     justify-content: space-between;
     padding: 18px 28px;
     background: var(--surface);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 3px solid var(--orange);
     position: sticky;
     top: 0;
     z-index: 100;
     backdrop-filter: blur(12px);
+    box-shadow: 0 4px 24px rgba(206,17,65,0.15);
   }
 
   .logo {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2rem;
-    color: var(--orange);
+    color: #ffffff;
     letter-spacing: 2px;
     display: flex;
     align-items: center;
     gap: 10px;
   }
+  .logo span { color: var(--orange); }
   .logo-icon { font-size: 1.6rem; }
 
   .header-actions { display: flex; gap: 10px; align-items: center; }
@@ -75,7 +77,7 @@
     transition: all 0.2s;
   }
   .btn-primary { background: var(--orange); color: #fff; }
-  .btn-primary:hover { background: #ff8040; transform: translateY(-1px); box-shadow: 0 6px 20px var(--orange-glow); }
+  .btn-primary:hover { background: #e8184f; transform: translateY(-1px); box-shadow: 0 6px 20px var(--orange-glow); }
   .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
   .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
   .btn-danger { background: var(--red); color: #fff; }
@@ -106,7 +108,7 @@
     gap: 7px;
   }
   .nav-tab:hover { color: var(--text); background: var(--surface2); }
-  .nav-tab.active { background: var(--orange-dim); color: var(--orange); }
+  .nav-tab.active { background: var(--orange-dim); color: #ffffff; border-bottom: 2px solid var(--orange); }
   .badge {
     background: var(--orange);
     color: #fff;
@@ -199,7 +201,7 @@
   .card:hover {
     border-color: var(--orange);
     transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--orange);
+    box-shadow: 0 12px 40px rgba(206,17,65,0.25), 0 0 0 1px var(--orange);
   }
 
   .card-img {
@@ -447,9 +449,9 @@
   }
   .stat-card.orange::before { background: var(--orange); }
   .stat-card.green::before { background: var(--green); }
-  .stat-card.blue::before { background: var(--blue); }
-  .stat-card.purple::before { background: var(--purple); }
-  .stat-card.red::before { background: var(--red); }
+  .stat-card.blue::before { background: #ffffff; }
+  .stat-card.purple::before { background: var(--orange); }
+  .stat-card.red::before { background: var(--orange); }
 
   .stat-icon { font-size: 1.5rem; margin-bottom: 12px; }
   .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; letter-spacing: 1px; margin-bottom: 2px; }
@@ -517,8 +519,32 @@
 <!-- HEADER -->
 <header>
   <div class="logo">
-    <span class="logo-icon">👟</span>
-    KickVault
+    <span class="logo-icon">
+      <svg width="38" height="28" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">
+        <!-- Sole -->
+        <ellipse cx="58" cy="68" rx="52" ry="9" fill="#111111" stroke="#CE1141" stroke-width="1.5"/>
+        <!-- Midsole white strip -->
+        <rect x="10" y="60" width="100" height="10" rx="4" fill="#ffffff"/>
+        <!-- Main upper - black base -->
+        <path d="M18 60 C18 60 12 45 15 32 C18 20 28 14 40 12 C52 10 62 10 72 12 C82 14 92 18 100 26 C108 34 110 45 110 60 Z" fill="#111111"/>
+        <!-- Red swoosh-style side panel -->
+        <path d="M22 54 C28 42 36 34 48 28 C60 22 74 20 88 26 C96 30 104 38 108 48 C96 44 80 42 64 44 C48 46 34 50 22 54 Z" fill="#CE1141"/>
+        <!-- Toe box - black -->
+        <path d="M15 58 C15 50 18 40 26 34 C34 28 44 26 52 28 C46 34 38 42 32 52 C26 56 20 58 15 58 Z" fill="#111111" stroke="#CE1141" stroke-width="1"/>
+        <!-- Ankle collar - red -->
+        <path d="M72 12 C82 14 92 18 100 26 C104 30 108 38 110 52 L100 54 C98 42 92 32 84 26 C76 20 72 16 72 12 Z" fill="#CE1141"/>
+        <!-- Tongue - white -->
+        <path d="M52 12 C56 10 62 10 66 12 C68 18 68 28 66 36 C62 34 56 34 52 36 C50 28 50 18 52 12 Z" fill="#ffffff"/>
+        <!-- Laces -->
+        <line x1="53" y1="16" x2="65" y2="16" stroke="#CE1141" stroke-width="2" stroke-linecap="round"/>
+        <line x1="52" y1="21" x2="66" y2="21" stroke="#CE1141" stroke-width="2" stroke-linecap="round"/>
+        <line x1="52" y1="26" x2="66" y2="26" stroke="#CE1141" stroke-width="2" stroke-linecap="round"/>
+        <line x1="52" y1="31" x2="66" y2="31" stroke="#CE1141" stroke-width="2" stroke-linecap="round"/>
+        <!-- Nike Air text on sole -->
+        <text x="38" y="67" font-family="Arial" font-size="6" fill="#CE1141" font-weight="bold">AIR</text>
+      </svg>
+    </span>
+    Dan's Sneaker Collection
   </div>
   <div class="header-actions">
     <button class="btn btn-primary" onclick="openAddModal(false)">+ Add Sneaker</button>
@@ -618,23 +644,21 @@
           <label>Colorway</label>
           <input type="text" id="fColorway" placeholder="White/Black, Bred…">
         </div>
-        <div class="form-group">
-          <label>Purchase Price ($)</label>
-          <input type="number" id="fPurchasePrice" placeholder="0" min="0">
-        </div>
-        <div class="form-group">
-          <label>Current/Resale Value ($)</label>
-          <input type="number" id="fCurrentValue" placeholder="0" min="0">
-        </div>
         <div class="form-group full">
           <label>Tags (comma separated)</label>
           <input type="text" id="fTags" placeholder="DS, Worn, Grail, Summer…">
         </div>
         <div class="form-group full">
-          <label>Barcode / SKU</label>
-          <div style="display:flex;gap:8px;">
-            <input type="text" id="fBarcode" placeholder="Enter or scan barcode" style="flex:1">
-            <button class="btn btn-ghost" onclick="openScanner()" title="Scan barcode">📷</button>
+          <label>🤖 AI Sneaker Identifier</label>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+            <p style="color:var(--text-dim);font-size:0.82rem;margin-bottom:10px;">Upload a photo of your sneaker and AI will identify the brand, model &amp; colorway automatically.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-primary" type="button" onclick="document.getElementById('aiPhotoInput').click()" style="flex:1;min-width:120px;">📸 Choose Photo</button>
+              <button class="btn btn-ghost" type="button" id="aiIdentifyBtn" onclick="identifyWithAI()" style="flex:1;min-width:120px;" disabled>✨ Identify Sneaker</button>
+            </div>
+            <input type="file" id="aiPhotoInput" accept="image/*" capture="environment" onchange="handleAIPhoto(event)" style="display:none">
+            <div id="aiStatus" style="margin-top:10px;font-size:0.82rem;color:var(--text-dim);display:none;"></div>
+            <img id="aiPreview" style="width:100%;border-radius:8px;margin-top:10px;display:none;max-height:160px;object-fit:cover;">
           </div>
         </div>
         <div class="form-group full">
@@ -657,26 +681,7 @@
   </div>
 </div>
 
-<!-- SCANNER MODAL -->
-<div class="modal-overlay" id="scannerModal">
-  <div class="modal" style="max-width:420px;">
-    <div class="modal-header">
-      <span class="modal-title">SCAN BARCODE</span>
-      <button class="modal-close" onclick="stopScanner()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="scanner-area">
-        <video id="video" autoplay playsinline></video>
-        <div id="scanPlaceholder">
-          <div style="font-size:2.5rem;margin-bottom:10px;">📷</div>
-          <p style="color:var(--text-dim);font-size:0.9rem;">Camera will activate below</p>
-        </div>
-      </div>
-      <button class="btn btn-primary" id="scanBtn" onclick="startCamera()" style="width:100%">Start Camera</button>
-      <p style="color:var(--text-dim);font-size:0.8rem;text-align:center;margin-top:12px;">Point at a barcode or QR code. You can also type the barcode manually in the form.</p>
-    </div>
-  </div>
-</div>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.6/JsBarcode.all.min.js"></script>
 <script>
@@ -698,8 +703,13 @@ let addingWishlist = false;
 let currentPhoto = null;
 let stream = null;
 
-const BRANDS = ['All', 'Nike', 'Jordan', 'Adidas', 'New Balance', 'Puma', 'Reebok', 'Converse', 'Vans', 'Other'];
 let activeFilter = 'All';
+
+function getDynamicBrands() {
+  const collection = sneakers.filter(s => !s.wishlist);
+  const brands = [...new Set(collection.map(s => s.brand).filter(Boolean))].sort();
+  return ['All', ...brands];
+}
 
 // ─── TAB NAVIGATION ──────────────────────────────────────────
 function switchTab(page, btn) {
@@ -713,8 +723,11 @@ function switchTab(page, btn) {
 
 // ─── FILTER CHIPS ─────────────────────────────────────────────
 function renderFilterChips() {
+  const brands = getDynamicBrands();
+  // Reset filter to 'All' if current filter no longer exists
+  if (!brands.includes(activeFilter)) activeFilter = 'All';
   const wrap = document.getElementById('filterChips');
-  wrap.innerHTML = BRANDS.map(b => `
+  wrap.innerHTML = brands.map(b => `
     <div class="chip ${activeFilter === b ? 'active' : ''}" onclick="setFilter('${b}')">${b}</div>
   `).join('');
 }
@@ -731,8 +744,7 @@ function renderCollection() {
   const collection = sneakers.filter(s => !s.wishlist);
   const filtered = collection.filter(s => {
     const matchSearch = !q || [s.brand, s.model, s.colorway, s.tags].join(' ').toLowerCase().includes(q);
-    const matchFilter = activeFilter === 'All' || s.brand === activeFilter ||
-      (activeFilter === 'Other' && !BRANDS.slice(1,-1).includes(s.brand));
+    const matchFilter = activeFilter === 'All' || s.brand === activeFilter;
     return matchSearch && matchFilter;
   });
 
@@ -766,9 +778,6 @@ function renderWishlist() {
 }
 
 function sneakerCard(s) {
-  const pl = (s.currentValue || 0) - (s.purchasePrice || 0);
-  const plClass = pl > 0 ? 'positive' : pl < 0 ? 'negative' : 'neutral';
-  const plText = pl > 0 ? `+$${pl.toLocaleString()}` : pl < 0 ? `-$${Math.abs(pl).toLocaleString()}` : 'Even';
   const tags = (s.tags || '').split(',').map(t=>t.trim()).filter(Boolean);
 
   return `
@@ -782,10 +791,6 @@ function sneakerCard(s) {
         <div class="card-model">${s.model || 'Unknown Model'}</div>
         <div class="card-colorway">${s.colorway || ''}</div>
         ${tags.length ? `<div class="card-tags">${tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div>` : ''}
-        <div class="card-footer">
-          <div class="card-value">$${(s.currentValue || 0).toLocaleString()}</div>
-          ${!s.wishlist ? `<div class="card-pl ${plClass}">${plText}</div>` : ''}
-        </div>
       </div>
     </div>
   `;
@@ -795,8 +800,6 @@ function sneakerCard(s) {
 function openDetail(id) {
   const s = sneakers.find(x => x.id === id);
   if (!s) return;
-  const pl = (s.currentValue || 0) - (s.purchasePrice || 0);
-  const plColor = pl >= 0 ? 'var(--green)' : 'var(--red)';
   const tags = (s.tags || '').split(',').map(t=>t.trim()).filter(Boolean);
 
   document.getElementById('detailContent').innerHTML = `
@@ -811,21 +814,6 @@ function openDetail(id) {
       <div class="detail-brand">${s.brand || ''}</div>
       <div class="detail-name">${s.model || 'Unknown Model'}</div>
       <div class="detail-colorway">${s.colorway || ''}</div>
-
-      <div class="value-row">
-        <div class="value-box">
-          <div class="value-box-label">Paid</div>
-          <div class="value-box-val" style="color:var(--blue)">$${(s.purchasePrice||0).toLocaleString()}</div>
-        </div>
-        <div class="value-box">
-          <div class="value-box-label">Value</div>
-          <div class="value-box-val" style="color:var(--purple)">$${(s.currentValue||0).toLocaleString()}</div>
-        </div>
-        <div class="value-box">
-          <div class="value-box-label">P&L</div>
-          <div class="value-box-val" style="color:${plColor}">${pl>=0?'+':''}\$${pl.toLocaleString()}</div>
-        </div>
-      </div>
 
       ${tags.length ? `
       <div class="detail-section">
@@ -875,10 +863,7 @@ function editSneaker(id) {
   document.getElementById('fBrand').value = s.brand || '';
   document.getElementById('fModel').value = s.model || '';
   document.getElementById('fColorway').value = s.colorway || '';
-  document.getElementById('fPurchasePrice').value = s.purchasePrice || '';
-  document.getElementById('fCurrentValue').value = s.currentValue || '';
   document.getElementById('fTags').value = s.tags || '';
-  document.getElementById('fBarcode').value = s.barcode || '';
   document.getElementById('fNotes').value = s.notes || '';
 
   const area = document.getElementById('photoUploadArea');
@@ -891,10 +876,8 @@ function editSneaker(id) {
 }
 
 function clearForm() {
-  ['fBrand','fModel','fColorway','fTags','fBarcode','fNotes'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('fPurchasePrice').value = '';
-  document.getElementById('fCurrentValue').value = '';
-  document.getElementById('photoUploadArea').innerHTML = `<div class="photo-upload-text"><div class="photo-upload-icon">📸</div>Click to upload a photo</div>`;
+  ['fBrand','fModel','fColorway','fTags','fNotes'].forEach(id => document.getElementById(id).value = '');
+  aiPhotoData = null; document.getElementById('aiIdentifyBtn').disabled = true; document.getElementById('aiStatus').style.display='none'; document.getElementById('aiPreview').style.display='none'; document.getElementById('photoUploadArea').innerHTML = `<div class="photo-upload-text"><div class="photo-upload-icon">📸</div>Click to upload a photo</div>`;
 }
 
 function saveSneaker() {
@@ -910,10 +893,7 @@ function saveSneaker() {
     brand,
     model,
     colorway: document.getElementById('fColorway').value.trim(),
-    purchasePrice: parseFloat(document.getElementById('fPurchasePrice').value) || 0,
-    currentValue: parseFloat(document.getElementById('fCurrentValue').value) || 0,
     tags: document.getElementById('fTags').value.trim(),
-    barcode: document.getElementById('fBarcode').value.trim(),
     notes: document.getElementById('fNotes').value.trim(),
     photo: currentPhoto,
     wishlist: addingWishlist,
@@ -928,6 +908,7 @@ function saveSneaker() {
 
   saveSneakers(sneakers);
   closeModal('addModal');
+  renderFilterChips();
   renderCollection();
   renderWishlist();
 }
@@ -937,6 +918,7 @@ function deleteSneaker(id) {
   sneakers = sneakers.filter(s => s.id !== id);
   saveSneakers(sneakers);
   closeModal('detailModal');
+  renderFilterChips();
   renderCollection();
   renderWishlist();
 }
@@ -954,67 +936,105 @@ function handlePhoto(event) {
   reader.readAsDataURL(file);
 }
 
-// ─── BARCODE SCANNER ─────────────────────────────────────────
-function openScanner() {
-  document.getElementById('scannerModal').classList.add('open');
+// ─── AI SNEAKER IDENTIFIER ───────────────────────────────────
+let aiPhotoData = null;
+
+function handleAIPhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    aiPhotoData = e.target.result;
+    // Also set it as the main sneaker photo
+    currentPhoto = e.target.result;
+    const area = document.getElementById('photoUploadArea');
+    area.innerHTML = `<img src="${aiPhotoData}"><div class="photo-upload-text" style="position:relative;background:rgba(0,0,0,0.5);padding:6px 12px;border-radius:6px;">Change Photo</div>`;
+    // Show preview in AI section
+    const preview = document.getElementById('aiPreview');
+    preview.src = aiPhotoData;
+    preview.style.display = 'block';
+    // Enable identify button
+    document.getElementById('aiIdentifyBtn').disabled = false;
+    setAIStatus('Photo ready — tap Identify Sneaker!', 'var(--orange)');
+  };
+  reader.readAsDataURL(file);
 }
 
-async function startCamera() {
+function setAIStatus(msg, color) {
+  const el = document.getElementById('aiStatus');
+  el.textContent = msg;
+  el.style.color = color || 'var(--text-dim)';
+  el.style.display = 'block';
+}
+
+async function identifyWithAI() {
+  if (!aiPhotoData) { setAIStatus('Please choose a photo first.', 'var(--red)'); return; }
+
+  const btn = document.getElementById('aiIdentifyBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Identifying…';
+  setAIStatus('Asking AI to identify your sneaker…', 'var(--orange)');
+
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-    const video = document.getElementById('video');
-    video.srcObject = stream;
-    video.style.display = 'block';
-    document.getElementById('scanPlaceholder').style.display = 'none';
-    document.getElementById('scanBtn').textContent = '📷 Scanning…';
-    document.getElementById('scanBtn').disabled = true;
+    // Strip base64 prefix to get raw data
+    const base64 = aiPhotoData.split(',')[1];
+    const mediaType = aiPhotoData.split(';')[0].split(':')[1];
 
-    // Use BarcodeDetector if available (Chrome/Edge)
-    if ('BarcodeDetector' in window) {
-      const detector = new BarcodeDetector();
-      const interval = setInterval(async () => {
-        try {
-          const barcodes = await detector.detect(video);
-          if (barcodes.length > 0) {
-            clearInterval(interval);
-            document.getElementById('fBarcode').value = barcodes[0].rawValue;
-            stopScanner();
-          }
-        } catch {}
-      }, 300);
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: { type: 'base64', media_type: mediaType, data: base64 }
+            },
+            {
+              type: 'text',
+              text: 'Identify this sneaker. Reply ONLY with a JSON object in this exact format, no other text: {"brand":"Nike","model":"Air Force 1","colorway":"White/White"}. If you cannot identify it, use your best guess based on visible design elements.'
+            }
+          ]
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '';
+
+    // Parse JSON from response
+    const match = text.match(/\{[^}]+\}/);
+    if (match) {
+      const result = JSON.parse(match[0]);
+      if (result.brand) document.getElementById('fBrand').value = result.brand;
+      if (result.model) document.getElementById('fModel').value = result.model;
+      if (result.colorway) document.getElementById('fColorway').value = result.colorway;
+      setAIStatus(`✅ Identified: ${result.brand} ${result.model} — ${result.colorway}`, 'var(--green)');
     } else {
-      // Fallback: prompt manual entry
-      setTimeout(() => {
-        const code = prompt('Barcode detection not available in this browser.\nEnter barcode manually:');
-        if (code) document.getElementById('fBarcode').value = code;
-        stopScanner();
-      }, 500);
+      setAIStatus('Could not parse result. Try a clearer photo.', 'var(--red)');
     }
-  } catch {
-    alert('Camera access denied. Enter the barcode manually in the form.');
-    stopScanner();
+  } catch(err) {
+    setAIStatus('AI identification failed. Fill in manually.', 'var(--red)');
   }
-}
 
-function stopScanner() {
-  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-  const video = document.getElementById('video');
-  video.style.display = 'none';
-  document.getElementById('scanPlaceholder').style.display = 'block';
-  document.getElementById('scanBtn').textContent = 'Start Camera';
-  document.getElementById('scanBtn').disabled = false;
-  closeModal('scannerModal');
+  btn.disabled = false;
+  btn.textContent = '✨ Identify Again';
 }
 
 // ─── STATS ───────────────────────────────────────────────────
 function renderStats() {
   const collection = sneakers.filter(s => !s.wishlist);
-  const totalSpent = collection.reduce((a, s) => a + (s.purchasePrice || 0), 0);
-  const totalValue = collection.reduce((a, s) => a + (s.currentValue || 0), 0);
-  const totalPL = totalValue - totalSpent;
   const wishCount = sneakers.filter(s => s.wishlist).length;
-
-  const plColor = totalPL >= 0 ? 'green' : 'red';
+  const tagMap = {};
+  collection.forEach(s => {
+    (s.tags||'').split(',').map(t=>t.trim()).filter(Boolean).forEach(t => {
+      tagMap[t] = (tagMap[t]||0)+1;
+    });
+  });
+  const topTag = Object.entries(tagMap).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
 
   document.getElementById('statsGrid').innerHTML = `
     <div class="stat-card orange">
@@ -1023,24 +1043,19 @@ function renderStats() {
       <div class="stat-label">Total Pairs</div>
     </div>
     <div class="stat-card blue">
-      <div class="stat-icon">💸</div>
-      <div class="stat-val">$${totalSpent.toLocaleString()}</div>
-      <div class="stat-label">Total Spent</div>
+      <div class="stat-icon">🏷️</div>
+      <div class="stat-val">${Object.keys(new Set(collection.map(s=>s.brand))).length || [...new Set(collection.map(s=>s.brand).filter(Boolean))].length}</div>
+      <div class="stat-label">Brands</div>
     </div>
     <div class="stat-card purple">
-      <div class="stat-icon">📈</div>
-      <div class="stat-val">$${totalValue.toLocaleString()}</div>
-      <div class="stat-label">Total Value</div>
-    </div>
-    <div class="stat-card ${plColor}">
-      <div class="stat-icon">${totalPL >= 0 ? '🚀' : '📉'}</div>
-      <div class="stat-val">${totalPL >= 0 ? '+' : ''}$${totalPL.toLocaleString()}</div>
-      <div class="stat-label">Total P&L</div>
-    </div>
-    <div class="stat-card orange">
       <div class="stat-icon">❤️</div>
       <div class="stat-val">${wishCount}</div>
       <div class="stat-label">On Wishlist</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-icon">🔖</div>
+      <div class="stat-val" style="font-size:1.4rem">${topTag}</div>
+      <div class="stat-label">Top Tag</div>
     </div>
   `;
 
@@ -1067,7 +1082,7 @@ function renderStats() {
 // ─── MODAL HELPERS ───────────────────────────────────────────
 function closeModal(id) {
   document.getElementById(id).classList.remove('open');
-  if (id === 'scannerModal') stopScanner();
+  
 }
 
 // Close modals on overlay click
